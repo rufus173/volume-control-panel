@@ -2,5 +2,5 @@
 Description=Controls volume from panel at %I
 
 [Service]
-Type=oneshot
-ExecStart=/usr/local/bin/log-activation %I
+Type=simple
+ExecStart=/usr/bin/volume-control-panel-interpreter %I

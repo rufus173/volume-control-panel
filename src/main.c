@@ -5,6 +5,7 @@
 #include <time.h>
 #include <termios.h>
 #include <fcntl.h>
+#include <string.h>
 
 #define LOG_FILE "/var/log/volume-control-panel.log"
 #define POT_MARGIN 5
@@ -23,7 +24,8 @@ int set_output_volume(int volume);
 int main(int argc, char **argv){
 	int exit_status = EXIT_SUCCESS;
 
-	int result = 0;//open_log_file(LOG_FILE);
+	int result = 0;
+	//result = open_log_file(LOG_FILE);
 	if (result < 0){
 		fprintf(stderr,"could not open log file.\n");
 		exit(EXIT_FAILURE);
@@ -48,10 +50,17 @@ int main(int argc, char **argv){
 	for (;;){
 		char *line = readline(panel_fd);
 		if (line == NULL){
-			perror("read");
+			fprintf(stderr,"could not read line.\n");
 			exit_status = EXIT_FAILURE;
 			goto cleanup;
 		}
+
+		//discard empty lines
+		if (strlen(line) < 1){
+			free(line);
+			continue;
+		}
+
 		char *endptr;
 		int pot_1_percent = strtol(line,&endptr,10);
 		int pot_2_percent = strtol(endptr+1,NULL,10);
@@ -185,8 +194,8 @@ char *readline(int fd){
 	}
 }
 int set_output_volume(int volume){
-	printf("%d\n",volume);
+	//printf("%d\n",volume);
 	char command_buffer[200];
-	snprintf(command_buffer,sizeof(command_buffer),"sudo -u \"#1000\" amixer -D pulse sset Master %d%%",volume);
+	snprintf(command_buffer,sizeof(command_buffer),"sudo -u \"#1000\" amixer -q -D pulse sset Master %d%%",volume);
 	system(command_buffer);
 }

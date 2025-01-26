@@ -5,3 +5,4 @@ if [ "$EUID" -ne "0" ]; then
 fi
 cp volume-control-panel@.service /usr/lib/systemd/system
 cp 100-volume-control-panel.rules /usr/lib/udev/rules.d
+cp volume-control-panel-interpreter /usr/bin
