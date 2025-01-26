@@ -25,7 +25,7 @@ int main(int argc, char **argv){
 	int exit_status = EXIT_SUCCESS;
 
 	int result = 0;
-	//result = open_log_file(LOG_FILE);
+	result = open_log_file(LOG_FILE);
 	if (result < 0){
 		fprintf(stderr,"could not open log file.\n");
 		exit(EXIT_FAILURE);
@@ -78,6 +78,8 @@ int main(int argc, char **argv){
 	cleanup:
 	close(panel_fd);
 	printf("board disconnected.\n");
+	fflush(stdout);
+	fflush(stderr);
 	return exit_status;
 }
 //stolen from c-code/source-code/foot-pedal-driver.c
