@@ -23,7 +23,7 @@ const int bar_renders[][4] = {
   {0x00,0x00,0x00,0x00},
   {0x00,0x00,0x00,0xc0},
   {0x00,0x00,0x30,0xf0},
-  {0x03,0x0f,0x3f,0xff},
+  {0x00,0x0c,0x3c,0xfc},
   {0x03,0x0f,0x3f,0xff},
 };
 
@@ -65,14 +65,25 @@ class LedMatrix {
       uint8_t bar_count_2 = 0;
       if (percent1 <= 5){
         bar_count_1 = 0;
-      }else if ((percent1 > 5 ) && (percent1 <= 25)){
+      }else if ((percent1 > 5 ) && (percent1 <= 35)){
         bar_count_1 = 1;
-      }else if ((percent1 > 45) && (percent1 <= 65)){
+      }else if ((percent1 > 35) && (percent1 <= 65)){
         bar_count_1 = 2;
       }else if ((percent1 > 65) && (percent1 <= 85)){
         bar_count_1 = 3;
       }else if (percent1 > 85){
         bar_count_1 = 4;
+      }
+      if (percent2 <= 5){
+        bar_count_2 = 0;
+      }else if ((percent2 > 5 ) && (percent2 <= 35)){
+        bar_count_2 = 1;
+      }else if ((percent2 > 35) && (percent2 <= 65)){
+        bar_count_2 = 2;
+      }else if ((percent2 > 65) && (percent2 <= 85)){
+        bar_count_2 = 3;
+      }else if (percent2 > 85){
+        bar_count_2 = 4;
       }
       //display bar 1 
       for (int i = 0; i < 4; i++){
@@ -112,5 +123,5 @@ void loop() {
   Serial.print(p1percent);
   Serial.print(",");
   Serial.println(p2percent);
-  led_matrix.display_percents(p1val,p2val);
+  led_matrix.display_percents(p1percent,p2percent);
 }

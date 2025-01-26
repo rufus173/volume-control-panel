@@ -1,0 +1,1 @@
+SUBSYSTEM=="tty", ACTION=="add",SUBSYSTEMS=="usb", ATTRS{idProduct}=="8037", TAG+="systemd", ENV{SYSTEMD_WANTS}="volume-control-panel@$devnode.service"
