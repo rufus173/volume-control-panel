@@ -18,6 +18,7 @@ int nearest_5(int val){
 int open_log_file(char *log_file_path);
 int open_tty(char *path);
 char *readline(int fd);
+int set_output_volume(int volume);
 
 int main(int argc, char **argv){
 	int exit_status = EXIT_SUCCESS;
@@ -54,13 +55,13 @@ int main(int argc, char **argv){
 		char *endptr;
 		int pot_1_percent = strtol(line,&endptr,10);
 		int pot_2_percent = strtol(endptr+1,NULL,10);
-		if ((pot_1_percent > (old_pot_1_percent - POT_MARGIN)) || (pot_1_percent < (old_pot_1_percent + POT_MARGIN))){
-			old_pot_1_percent = nearest_5(pot_1_percent);
+		if ((pot_1_percent < (old_pot_1_percent - POT_MARGIN)) || (pot_1_percent > (old_pot_1_percent + POT_MARGIN))){
+			old_pot_1_percent = pot_1_percent;
+			set_output_volume(nearest_5(pot_1_percent));
 		}
-		if ((pot_2_percent > (old_pot_2_percent - POT_MARGIN)) || (pot_2_percent < (old_pot_2_percent + POT_MARGIN))){
-			old_pot_2_percent = nearest_5(pot_2_percent);
+		if ((pot_2_percent < (old_pot_2_percent - POT_MARGIN)) || (pot_2_percent > (old_pot_2_percent + POT_MARGIN))){
+			old_pot_2_percent = pot_2_percent;
 		}
-		printf("%d %d\n",old_pot_1_percent,old_pot_2_percent);
 		free(line);
 	}
 
@@ -182,4 +183,10 @@ char *readline(int fd){
 		line[line_size-2] = buffer[0];
 		line[line_size-1] = '\0';
 	}
+}
+int set_output_volume(int volume){
+	printf("%d\n",volume);
+	char command_buffer[200];
+	snprintf(command_buffer,sizeof(command_buffer),"sudo -u \"#1000\" amixer -D pulse sset Master %d%%",volume);
+	system(command_buffer);
 }
