@@ -20,6 +20,7 @@ int open_log_file(char *log_file_path);
 int open_tty(char *path);
 char *readline(int fd);
 int set_output_volume(int volume);
+int set_input_volume(int volume);
 
 int main(int argc, char **argv){
 	int exit_status = EXIT_SUCCESS;
@@ -63,13 +64,17 @@ int main(int argc, char **argv){
 
 		char *endptr;
 		int pot_1_percent = strtol(line,&endptr,10);
-		int pot_2_percent = strtol(endptr+1,NULL,10);
+		endptr++;
+		int pot_2_percent = strtol(endptr,NULL,10);
+		//printf("%s - %s\n",line,endptr);
+		//printf("%d\n",pot_2_percent);
 		if ((pot_1_percent < (old_pot_1_percent - POT_MARGIN)) || (pot_1_percent > (old_pot_1_percent + POT_MARGIN))){
 			old_pot_1_percent = pot_1_percent;
 			set_output_volume(nearest_5(pot_1_percent));
 		}
 		if ((pot_2_percent < (old_pot_2_percent - POT_MARGIN)) || (pot_2_percent > (old_pot_2_percent + POT_MARGIN))){
 			old_pot_2_percent = pot_2_percent;
+			set_input_volume(nearest_5(pot_2_percent));
 		}
 		free(line);
 	}
@@ -182,7 +187,9 @@ char *readline(int fd){
 			return NULL;
 		}
 		if (buffer[0] == '\n'){ //line ends in crlf
-			line[line_size-2] = '\0'; //remove the '\r'
+			if (line[line_size-2] == '\r'){
+				line[line_size-2] = '\0'; //remove the '\r'
+			}
 			return line;
 		}
 		line_size++;
@@ -199,5 +206,12 @@ int set_output_volume(int volume){
 	//printf("%d\n",volume);
 	char command_buffer[200];
 	snprintf(command_buffer,sizeof(command_buffer),"sudo -u \"#1000\" amixer -q -D pulse sset Master %d%%",volume);
+	system(command_buffer);
+}
+int set_input_volume(int volume){
+	char command_buffer[200];
+	//printf("%d\n",volume);
+	//snprintf(command_buffer,sizeof(command_buffer),"sudo -u \"#1000\" pactl set-source-volume @DEFAULT_SOURCE@ %d%%",volume);
+	snprintf(command_buffer,sizeof(command_buffer),"sudo -u \"#1000\" amixer -q -D pulse sset Capture %d%%",volume);
 	system(command_buffer);
 }
