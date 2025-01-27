@@ -212,6 +212,6 @@ int set_input_volume(int volume){
 	char command_buffer[200];
 	//printf("%d\n",volume);
 	//snprintf(command_buffer,sizeof(command_buffer),"sudo -u \"#1000\" pactl set-source-volume @DEFAULT_SOURCE@ %d%%",volume);
-	snprintf(command_buffer,sizeof(command_buffer),"sudo -u \"#1000\" amixer -q -D pulse sset Capture %d%%",volume);
+	snprintf(command_buffer,sizeof(command_buffer),"sudo -u \"#1000\" pactl set-source-volume @DEFAULT_SOURCE@ %d%%",volume);
 	system(command_buffer);
 }
