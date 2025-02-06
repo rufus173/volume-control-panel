@@ -26,7 +26,7 @@ int main(int argc, char **argv){
 	int exit_status = EXIT_SUCCESS;
 
 	int result = 0;
-	result = open_log_file(LOG_FILE);
+	//result = open_log_file(LOG_FILE);
 	if (result < 0){
 		fprintf(stderr,"could not open log file.\n");
 		exit(EXIT_FAILURE);
@@ -205,13 +205,13 @@ char *readline(int fd){
 int set_output_volume(int volume){
 	//printf("%d\n",volume);
 	char command_buffer[200];
-	snprintf(command_buffer,sizeof(command_buffer),"sudo -u \"#1000\" amixer -q -D pulse sset Master %d%%",volume);
+	snprintf(command_buffer,sizeof(command_buffer),"sudo -u \"#1000\" XDG_RUNTIME_DIR=/run/user/1000 amixer -q -D pulse sset Master %d%%",volume);
 	system(command_buffer);
 }
 int set_input_volume(int volume){
 	char command_buffer[200];
 	//printf("%d\n",volume);
 	//snprintf(command_buffer,sizeof(command_buffer),"sudo -u \"#1000\" pactl set-source-volume @DEFAULT_SOURCE@ %d%%",volume);
-	snprintf(command_buffer,sizeof(command_buffer),"sudo -u \"#1000\" pactl set-source-volume @DEFAULT_SOURCE@ %d%%",volume);
+	snprintf(command_buffer,sizeof(command_buffer),"sudo -u \"#1000\" XDG_RUNTIME_DIR=/run/user/1000 pactl set-source-volume @DEFAULT_SOURCE@ %d%%",volume);
 	system(command_buffer);
 }
